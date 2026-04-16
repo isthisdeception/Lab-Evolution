@@ -13,38 +13,33 @@ void drawPixel(int x, int y) {
     glEnd();
 }
 
-// Draws a line from (x1, y1) to (x2, y2) using Bresenham's line algorithm.
 void bresenhamLine(int x1, int y1, int x2, int y2) {
-    // Calculates the horizontal distance between the endpoints.
     int dx = abs(x2 - x1);
-    // Calculates the vertical distance between the endpoints.
     int dy = abs(y2 - y1);
-    // Initializes the decision parameter used by Bresenham's algorithm.
-    int p = 2 * dy - dx;
 
-    // Starts x at the first endpoint's x-coordinate.
-    int x = x1;
-    // Starts y at the first endpoint's y-coordinate.
-    int y = y1;
+    int sx = (x1 < x2) ? 1 : -1;   // step direction for x
+    int sy = (y1 < y2) ? 1 : -1;   // step direction for y
 
-    // Continues plotting pixels until x reaches the second endpoint.
-    while (x <= x2) {
-        // Draws the current pixel on the line.
-        drawPixel(x, y);
+    int err = dx - dy;
 
-        // If the decision parameter is negative...
-        if (p < 0) {
-            // ...choose the next pixel directly to the right and update p.
-            p = p + 2 * dy;
-        } else {
-            // Otherwise move one step upward as well.
-            y++;
-            // Updates the decision parameter after choosing the diagonal pixel.
-            p = p + 2 * dy - 2 * dx;
+    while (true) {
+        drawPixel(x1, y1);
+
+        // Stop when destination is reached
+        if (x1 == x2 && y1 == y2)
+            break;
+
+        int e2 = 2 * err;
+
+        if (e2 > -dy) {
+            err = err - dy;
+            x1 = x1 + sx;
         }
 
-        // Moves to the next x-position.
-        x++;
+        if (e2 < dx) {
+            err = err + dx;
+            y1 = y1 + sy;
+        }
     }
 }
 
